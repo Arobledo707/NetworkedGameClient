@@ -1,0 +1,39 @@
+
+syntax = "proto2";
+
+message Player {
+  required string name = 1;
+  required string password = 2;
+  required int32 wins = 3;
+  required int32 losses = 4;
+  
+  enum PlayerState
+  {
+	Lobby = 0;
+	InGame = 1;
+	LoggedOut = 2;
+	Challenged = 3;
+  }
+  
+  required PlayerState playerState = 5;
+  required int32 clientId = 6;
+  required int32 challengeId = 7;
+}
+
+message Leaderboard	{
+	optional string winners = 1;
+	optional string losers = 2;
+}
+
+message Army {
+	required int32 archers = 1;
+	required int32 swordsman = 2;
+	required int32 cavalry = 3;
+}
+
+message Game {
+	required Player player1 = 1;
+	required Player player2 = 2;
+	required Army army1 = 3;
+	required Army army2 = 4;
+}
