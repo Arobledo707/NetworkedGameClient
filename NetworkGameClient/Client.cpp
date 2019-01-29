@@ -80,10 +80,13 @@ bool Client::Init(int argc, _TCHAR *argv[])
 		_getch();
 		return false;
 	}
+	//TODO go back to std::thread soon
+	// swapped back to create thread just for a bit
+
 	//passing this into thread is not good
 	// TODO fix later
-	m_recieveThread = std::thread(&Client::RecieveMessages, m_connectSocket);
-	//CreateThread(NULL, 0, RecieveMessage, (LPVOID)m_connectSocket, 0, 0);
+	//m_recieveThread = std::thread(&Client::RecieveMessages, m_connectSocket);
+	CreateThread(NULL, 0, RecieveMessage, (LPVOID)m_connectSocket, 0, 0);
 
 	return true;
 }
