@@ -103,7 +103,12 @@ void Client::Update()
 			exit(0);
 			break;
 		}
-		send(m_connectSocket, inputString.c_str(), inputString.length(), 0);
+		m_iResult = send(m_connectSocket, inputString.c_str(), inputString.length(), 0);
+
+		if (m_iResult == SOCKET_ERROR)
+		{
+			std::cout << "send failed: " << WSAGetLastError() << std::endl;
+		}
 		
 	}
 }
@@ -119,13 +124,21 @@ void Client::RecieveMessages(SOCKET connectSocket)
 	char recvbuf[DEFAULT_BUFLEN];
 	memset(recvbuf, 0, sizeof(char) * DEFAULT_BUFLEN);
 	SOCKET connfd = (SOCKET)m_connectSocket;
+	int iResult;
 
 	for (;;)
 	{
 		memset(recvbuf, 0, sizeof(char) * DEFAULT_BUFLEN);
-		recv(connfd, recvbuf, sizeof(recvbuf), 0);
+		iResult = recv(connfd, recvbuf, sizeof(recvbuf), 0);
 
-		printf(recvbuf);
-		printf("\n");
+		if (iResult == SOCKET_ERROR) 
+		{
+			std::cout << "recv failed: " << WSAGetLastError() << std::endl;
+		}
+		else 
+		{
+			printf(recvbuf);
+			printf("\n");
+		}
 	}
 }
