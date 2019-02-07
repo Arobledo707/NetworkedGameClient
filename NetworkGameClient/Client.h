@@ -9,12 +9,30 @@
 #include <Ws2tcpip.h>
 #include <thread>
 #include <atomic>
+#include "ServerCommands.pb.h"
 
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT 9999
 
 class Client
 {
+
+private:
+	 enum Command
+	{
+		Challenge,
+		Info,
+		Quit,
+		Login,
+		Logout,
+		Chat,
+		List,
+		Commands,
+		Help,
+		CommandSize
+	};
+
+
 public:
 	Client();
 	~Client();
@@ -24,6 +42,8 @@ public:
 	void CleanUp();
 private:
 	void RecieveMessages(SOCKET connectSocket);
+	void ProcessInput(std::string input);
+	void PrintCommands();
 
 private:
 	WSADATA m_wsaData;
@@ -32,5 +52,7 @@ private:
 	int m_iResult;
 
 	std::thread m_recieveThread;
+	std::map<Command, std::string> m_commandInfo;
+	std::vector<std::string> m_commands{ "Challenge", "Info", "Quit", "Login", "Logout", "Chat", "List", "Commands, Help" };
 };
 

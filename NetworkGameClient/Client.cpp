@@ -4,6 +4,15 @@
 
 Client::Client()
 {
+	m_commandInfo.emplace(Command::Challenge, "Challenge a player to a game");
+	m_commandInfo.emplace(Command::Login, "Login name password");
+	m_commandInfo.emplace(Command::Logout, "Logs out");
+	m_commandInfo.emplace(Command::Chat, "Sends chat message to server");
+	m_commandInfo.emplace(Command::Commands, "Displays list of available commands");
+	m_commandInfo.emplace(Command::Info, "Gets Info about a player");
+
+
+
 }
 
 
@@ -119,6 +128,7 @@ void Client::CleanUp()
 	WSACleanup();
 }
 
+
 void Client::RecieveMessages(SOCKET connectSocket)
 {
 	char recvbuf[DEFAULT_BUFLEN];
@@ -140,5 +150,83 @@ void Client::RecieveMessages(SOCKET connectSocket)
 			printf(recvbuf);
 			printf("\n");
 		}
+	}
+}
+
+void Client::ProcessInput(std::string input)
+{
+	ServerCommand servCommand;
+
+	if (input.substr(0, m_commands[Command::Login].size()) == m_commands[Command::Login]) 
+	{
+		servCommand.set_command(Command::Login);
+	}
+	else if (input.substr(0, m_commands[Command::Info].size()) == m_commands[Command::Info])
+	{
+		servCommand.set_command(Command::Info);
+	}
+
+	else if (input.substr(0, m_commands[Command::Quit].size()) == m_commands[Command::Quit])
+	{
+		servCommand.set_command(Command::Quit);
+	}
+
+	else if (input.substr(0, m_commands[Command::Challenge].size()) == m_commands[Command::Challenge])
+	{
+		servCommand.set_command(Command::Challenge);
+	}
+
+	else if (input.substr(0, m_commands[Command::Chat].size()) == m_commands[Command::Chat])
+	{
+		servCommand.set_command(Command::Chat);
+	}
+
+	else if (input.substr(0, m_commands[Command::Logout].size()) == m_commands[Command::Logout])
+	{
+		servCommand.set_command(Command::Logout);
+
+	}
+
+	else if (input.substr(0, m_commands[Command::List].size()) == m_commands[Command::List])
+	{
+		servCommand.set_command(Command::List);
+
+	}
+
+	else if (input.substr(0, m_commands[Command::Commands].size()) == m_commands[Command::Commands])
+	{
+		servCommand.set_command(Command::Commands);
+
+		return;
+
+	}
+	else if (input.substr(0, m_commands[Command::Commands].size()) == m_commands[Command::Commands])
+	{
+		servCommand.set_command(Command::Help);
+
+		return;
+	}
+
+
+
+	if (servCommand.has_command()) 
+	{
+		std::string commands = servCommand.SerializeAsString();
+		m_iResult = send(m_connectSocket, commands.c_str(), commands.length(), 0);
+
+		if (m_iResult == SOCKET_ERROR)
+		{
+			std::cout << "send failed: " << WSAGetLastError() << std::endl;
+		}
+	}
+
+}
+
+void Client::PrintCommands()
+{
+	std::cout << "Here are the available commands: " << std::endl;
+	for (std::pair<Command, std::string> info : m_commandInfo) 
+	{
+		std::cout << m_commands[info.first] << ": " << info.second << std::endl;
 	}
 }
