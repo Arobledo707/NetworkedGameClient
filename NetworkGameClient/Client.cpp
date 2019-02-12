@@ -10,9 +10,9 @@ Client::Client()
 	m_commandInfo.emplace(Command::Chat, "Sends chat message to server");
 	m_commandInfo.emplace(Command::Commands, "Displays list of available commands");
 	m_commandInfo.emplace(Command::Info, "Gets Info about a player");
-
-
-
+	m_commandInfo.emplace(Command::Quit, "Quits the client and disconnects from server.");
+	m_commandInfo.emplace(Command::List, "Lists all players currently online");
+	m_commandInfo.emplace(Command::Help, "Shows info about a specified command");
 }
 
 
@@ -160,50 +160,60 @@ void Client::ProcessInput(std::string input)
 	if (input.substr(0, m_commands[Command::Login].size()) == m_commands[Command::Login]) 
 	{
 		servCommand.set_command(Command::Login);
+		servCommand.set_content(input.substr(m_commands[Command::Login].size() + 1, input.size()));
 	}
 	else if (input.substr(0, m_commands[Command::Info].size()) == m_commands[Command::Info])
 	{
 		servCommand.set_command(Command::Info);
+		servCommand.set_content(input.substr(m_commands[Command::Info].size() + 1, input.size()));
 	}
 
 	else if (input.substr(0, m_commands[Command::Quit].size()) == m_commands[Command::Quit])
 	{
 		servCommand.set_command(Command::Quit);
+		servCommand.set_content(input.substr(m_commands[Command::Quit].size() + 1, input.size()));
 	}
 
 	else if (input.substr(0, m_commands[Command::Challenge].size()) == m_commands[Command::Challenge])
 	{
 		servCommand.set_command(Command::Challenge);
+		servCommand.set_content(input.substr(m_commands[Command::Challenge].size() + 1, input.size()));
+
+
 	}
 
 	else if (input.substr(0, m_commands[Command::Chat].size()) == m_commands[Command::Chat])
 	{
 		servCommand.set_command(Command::Chat);
+		servCommand.set_content(input.substr(m_commands[Command::Chat].size() + 1, input.size()));
 	}
 
 	else if (input.substr(0, m_commands[Command::Logout].size()) == m_commands[Command::Logout])
 	{
 		servCommand.set_command(Command::Logout);
-
+		servCommand.set_content(input.substr(m_commands[Command::Logout].size() + 1, input.size()));
 	}
 
 	else if (input.substr(0, m_commands[Command::List].size()) == m_commands[Command::List])
 	{
 		servCommand.set_command(Command::List);
-
+		servCommand.set_content(input.substr(m_commands[Command::List].size() + 1, input.size()));
 	}
 
 	else if (input.substr(0, m_commands[Command::Commands].size()) == m_commands[Command::Commands])
 	{
 		servCommand.set_command(Command::Commands);
 
+		for (auto pair : m_commandInfo)
+		{
+			std::cout << m_commands[pair.first] << ": " << pair.second << std::endl;
+		}
 		return;
-
 	}
 	else if (input.substr(0, m_commands[Command::Commands].size()) == m_commands[Command::Commands])
 	{
 		servCommand.set_command(Command::Help);
-
+		servCommand.set_content(input.substr(m_commands[Command::Help].size() + 1, input.size()));
 		return;
 	}
 
