@@ -9,7 +9,9 @@
 #include <Ws2tcpip.h>
 #include <thread>
 #include <atomic>
+
 #include "ServerCommands.pb.h"
+#include "protoTest.pb.h"
 
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT 9999
@@ -50,6 +52,7 @@ private:
 	SOCKET m_connectSocket = INVALID_SOCKET;
 	struct sockaddr_in m_servaddr;
 	int m_iResult;
+	Player* m_pPlayer;
 
 	std::thread m_recieveThread;
 	std::map<Command, std::string> m_commandInfo;
