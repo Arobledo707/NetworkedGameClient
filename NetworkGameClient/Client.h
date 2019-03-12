@@ -43,7 +43,7 @@ public:
 	void Update();
 	void CleanUp();
 private:
-	void RecieveMessages(SOCKET connectSocket);
+	void RecieveMessages();
 	void ProcessInput(std::string input);
 	void PrintCommands();
 
@@ -52,7 +52,7 @@ private:
 	SOCKET m_connectSocket = INVALID_SOCKET;
 	struct sockaddr_in m_servaddr;
 	int m_iResult;
-	Player* m_pPlayer;
+	std::atomic<Player*> m_pPlayer;
 
 	std::thread m_recieveThread;
 	std::map<Command, std::string> m_commandInfo;

@@ -94,8 +94,8 @@ bool Client::Init(int argc, _TCHAR *argv[])
 
 	//passing this into thread is not good
 	// TODO fix later
-	//m_recieveThread = std::thread(&Client::RecieveMessages, m_connectSocket);
-	CreateThread(NULL, 0, RecieveMessage, (LPVOID)m_connectSocket, 0, 0);
+	m_recieveThread = std::thread(&Client::RecieveMessages, this);
+	//CreateThread(NULL, 0, RecieveMessage, (LPVOID)m_connectSocket, 0, 0);
 
 	return true;
 }
@@ -129,14 +129,14 @@ void Client::CleanUp()
 }
 
 
-void Client::RecieveMessages(SOCKET connectSocket)
+void Client::RecieveMessages()
 {
 	char recvbuf[DEFAULT_BUFLEN];
 	memset(recvbuf, 0, sizeof(char) * DEFAULT_BUFLEN);
 	SOCKET connfd = (SOCKET)m_connectSocket;
 	int iResult;
 
-	for (;;)
+	while (true)
 	{
 		memset(recvbuf, 0, sizeof(char) * DEFAULT_BUFLEN);
 		iResult = recv(connfd, recvbuf, sizeof(recvbuf), 0);
