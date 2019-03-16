@@ -103,20 +103,11 @@ bool Client::Init(int argc, _TCHAR *argv[])
 void Client::Update()
 {
 	std::string inputString;
-	const std::string clientQuit = "Quit";
 	for (;;)
 	{
 		std::getline(std::cin, inputString);
 
 		ProcessInput(inputString);
-
-		//if (inputString == clientQuit)
-		//{
-		//	exit(0);
-		//	break;
-		//}
-		//m_iResult = send(m_connectSocket, inputString.c_str(), inputString.length(), 0);
-		
 	}
 }
 
@@ -168,7 +159,7 @@ void Client::ProcessInput(std::string input)
 
 		std::string userName;
 
-		int j = m_commands[Command::Login].size() + 1;
+		int j = static_cast<int>(m_commands[Command::Login].size() + 1);
 
 		while (input[j] != ' ' && j <= input.size()-1)
 		{
@@ -249,7 +240,7 @@ void Client::ProcessInput(std::string input)
 	{
 		std::string commands = servCommand.SerializeAsString();
 		std::string lolok = servCommand.content(0);
-		m_iResult = send(m_connectSocket, commands.c_str(), commands.length(), 0);
+		m_iResult = send(m_connectSocket, commands.c_str(), static_cast<int>(commands.length()), 0);
 
 		if (m_iResult == SOCKET_ERROR)
 		{
