@@ -165,16 +165,18 @@ void Client::ProcessInput(std::string input)
 			std::cout << "Error: no username or password entered.\nLogin {username} {password}" << std::endl;
 			return;
 		}
+
 		std::string userName;
 
 		int j = m_commands[Command::Login].size() + 1;
-		while (input[j] != ' ')
+
+		while (input[j] != ' ' && j <= input.size()-1)
 		{
 			userName += input[j];
 			++j;
 		}
 
-		if (input.length() < 5 + userName.length()) 
+		if (input.length() < m_commands[Command::Login].size() + userName.length())
 		{
 			std::cout << "Error: no password entered" << std::endl;
 			return;
@@ -182,25 +184,26 @@ void Client::ProcessInput(std::string input)
 
 		//Add username and password
 		servCommand.add_content(userName.c_str(), userName.size());
-		servCommand.add_content(input.substr((userName.length()), input.length()));
+		std::string password = input.substr((j+1), input.length());
+		servCommand.add_content(password.c_str(), password.size());
 	}
-	/*else if (input.substr(0, m_commands[Command::Info].size()) == m_commands[Command::Info])
+	else if (input.substr(0, m_commands[Command::Info].size()) == m_commands[Command::Info])
 	{
 		servCommand.set_command(Command::Info);
-		servCommand.set_content(input.substr(m_commands[Command::Info].size() + 1, input.size()));
+		servCommand.add_content(input.substr(m_commands[Command::Info].size() + 1, input.size()));
 	}
 
 	else if (input.substr(0, m_commands[Command::Quit].size()) == m_commands[Command::Quit])
 	{
 		servCommand.set_command(Command::Quit);
-		servCommand.set_content(input.substr(m_commands[Command::Quit].size() + 1, input.size()));
+		servCommand.add_content(input.substr(m_commands[Command::Quit].size() + 1, input.size()));
 
 	}
 
 	else if (input.substr(0, m_commands[Command::Challenge].size()) == m_commands[Command::Challenge])
 	{
 		servCommand.set_command(Command::Challenge);
-		servCommand.set_content(input.substr(m_commands[Command::Challenge].size() + 1, input.size()));
+		servCommand.add_content(input.substr(m_commands[Command::Challenge].size() + 1, input.size()));
 
 
 	}
@@ -208,19 +211,19 @@ void Client::ProcessInput(std::string input)
 	else if (input.substr(0, m_commands[Command::Chat].size()) == m_commands[Command::Chat])
 	{
 		servCommand.set_command(Command::Chat);
-		servCommand.set_content(input.substr(m_commands[Command::Chat].size() + 1, input.size()));
+		servCommand.add_content(input.substr(m_commands[Command::Chat].size() + 1, input.size()));
 	}
 
 	else if (input.substr(0, m_commands[Command::Logout].size()) == m_commands[Command::Logout])
 	{
 		servCommand.set_command(Command::Logout);
-		servCommand.set_content(input.substr(m_commands[Command::Logout].size() + 1, input.size()));
+		servCommand.add_content(input.substr(m_commands[Command::Logout].size() + 1, input.size()));
 	}
 
 	else if (input.substr(0, m_commands[Command::List].size()) == m_commands[Command::List])
 	{
 		servCommand.set_command(Command::List);
-		servCommand.set_content(input.substr(m_commands[Command::List].size() + 1, input.size()));
+		servCommand.add_content(input.substr(m_commands[Command::List].size() + 1, input.size()));
 	}
 
 	else if (input.substr(0, m_commands[Command::Commands].size()) == m_commands[Command::Commands])
@@ -236,9 +239,9 @@ void Client::ProcessInput(std::string input)
 	else if (input.substr(0, m_commands[Command::Commands].size()) == m_commands[Command::Commands])
 	{
 		servCommand.set_command(Command::Help);
-		servCommand.set_content(input.substr(m_commands[Command::Help].size() + 1, input.size()));
+		servCommand.add_content(input.substr(m_commands[Command::Help].size() + 1, input.size()));
 		return;
-	}*/
+	}
 
 
 
