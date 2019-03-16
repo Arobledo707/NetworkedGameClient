@@ -107,17 +107,15 @@ void Client::Update()
 	for (;;)
 	{
 		std::getline(std::cin, inputString);
-		if (inputString == clientQuit)
-		{
-			exit(0);
-			break;
-		}
-		m_iResult = send(m_connectSocket, inputString.c_str(), inputString.length(), 0);
 
-		if (m_iResult == SOCKET_ERROR)
-		{
-			std::cout << "send failed: " << WSAGetLastError() << std::endl;
-		}
+		ProcessInput(inputString);
+
+		//if (inputString == clientQuit)
+		//{
+		//	exit(0);
+		//	break;
+		//}
+		//m_iResult = send(m_connectSocket, inputString.c_str(), inputString.length(), 0);
 		
 	}
 }
@@ -160,9 +158,33 @@ void Client::ProcessInput(std::string input)
 	if (input.substr(0, m_commands[Command::Login].size()) == m_commands[Command::Login]) 
 	{
 		servCommand.set_command(Command::Login);
-		servCommand.set_content(input.substr(m_commands[Command::Login].size() + 1, input.size()));
+		//servCommand.set_content(input.substr(m_commands[Command::Login].size() + 1, input.size()));
+
+		if (input.size() == m_commands[Command::Login].size()) 
+		{
+			std::cout << "Error: no username or password entered.\nLogin {username} {password}" << std::endl;
+			return;
+		}
+		std::string userName;
+
+		int j = m_commands[Command::Login].size() + 1;
+		while (input[j] != ' ')
+		{
+			userName += input[j];
+			++j;
+		}
+
+		if (input.length() < 5 + userName.length()) 
+		{
+			std::cout << "Error: no password entered" << std::endl;
+			return;
+		}
+
+		//Add username and password
+		servCommand.add_content(userName.c_str(), userName.size());
+		servCommand.add_content(input.substr((userName.length()), input.length()));
 	}
-	else if (input.substr(0, m_commands[Command::Info].size()) == m_commands[Command::Info])
+	/*else if (input.substr(0, m_commands[Command::Info].size()) == m_commands[Command::Info])
 	{
 		servCommand.set_command(Command::Info);
 		servCommand.set_content(input.substr(m_commands[Command::Info].size() + 1, input.size()));
@@ -172,6 +194,7 @@ void Client::ProcessInput(std::string input)
 	{
 		servCommand.set_command(Command::Quit);
 		servCommand.set_content(input.substr(m_commands[Command::Quit].size() + 1, input.size()));
+
 	}
 
 	else if (input.substr(0, m_commands[Command::Challenge].size()) == m_commands[Command::Challenge])
@@ -215,13 +238,14 @@ void Client::ProcessInput(std::string input)
 		servCommand.set_command(Command::Help);
 		servCommand.set_content(input.substr(m_commands[Command::Help].size() + 1, input.size()));
 		return;
-	}
+	}*/
 
 
 
 	if (servCommand.has_command()) 
 	{
 		std::string commands = servCommand.SerializeAsString();
+		std::string lolok = servCommand.content(0);
 		m_iResult = send(m_connectSocket, commands.c_str(), commands.length(), 0);
 
 		if (m_iResult == SOCKET_ERROR)
