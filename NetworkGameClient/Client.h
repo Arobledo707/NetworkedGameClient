@@ -56,6 +56,6 @@ private:
 
 	std::thread m_recieveThread;
 	std::map<Command, std::string> m_commandInfo;
-	std::vector<std::string> m_commands{ "Challenge", "Info", "Quit", "Login", "Logout", "Chat", "List", "Commands, Help" };
+	std::vector<std::string> m_commands{ "Challenge", "Info", "Quit", "Login", "Logout", "Chat", "List", "Commands", "Help" };
 };
 

@@ -4,40 +4,21 @@
 
 Client::Client()
 {
-	m_commandInfo.emplace(Command::Challenge, "Challenge a player to a game");
-	m_commandInfo.emplace(Command::Login, "Login name password");
-	m_commandInfo.emplace(Command::Logout, "Logs out");
-	m_commandInfo.emplace(Command::Chat, "Sends chat message to server");
-	m_commandInfo.emplace(Command::Commands, "Displays list of available commands");
-	m_commandInfo.emplace(Command::Info, "Gets Info about a player");
-	m_commandInfo.emplace(Command::Quit, "Quits the client and disconnects from server.");
-	m_commandInfo.emplace(Command::List, "Lists all players currently online");
-	m_commandInfo.emplace(Command::Help, "Shows info about a specified command");
+	m_commandInfo.emplace(Command::Challenge, "\nChallenge a player to a game");
+	m_commandInfo.emplace(Command::Login, "{username} {passsword}\nLogs in user");
+	m_commandInfo.emplace(Command::Logout, "\nLogs out");
+	m_commandInfo.emplace(Command::Chat, "{message}\nSends chat message to server");
+	m_commandInfo.emplace(Command::Commands, "\nDisplays list of available commands");
+	m_commandInfo.emplace(Command::Info, "{playername}\nGets Info about a player");
+	m_commandInfo.emplace(Command::Quit, "\nQuits the client and disconnects from server.");
+	m_commandInfo.emplace(Command::List, "\nLists all players currently online");
+	m_commandInfo.emplace(Command::Help, "{command}\nShows info about a specified command");
 }
 
 
 Client::~Client()
 {
 }
-
-DWORD WINAPI RecieveMessage(LPVOID connectSocket)
-{
-	char recvbuf[DEFAULT_BUFLEN];
-	memset(recvbuf, 0, sizeof(char) * DEFAULT_BUFLEN);
-	SOCKET connfd = (SOCKET)connectSocket;
-
-	for (;;)
-	{
-		memset(recvbuf, 0, sizeof(char) * DEFAULT_BUFLEN);
-		recv(connfd, recvbuf, sizeof(recvbuf), 0);
-
-		printf(recvbuf);
-		printf("\n");
-	}
-	return 0;
-}
-
-
 
 
 bool Client::Init(int argc, _TCHAR *argv[])
@@ -89,11 +70,7 @@ bool Client::Init(int argc, _TCHAR *argv[])
 		_getch();
 		return false;
 	}
-	//TODO go back to std::thread soon
-	// swapped back to create thread just for a bit
 
-	//passing this into thread is not good
-	// TODO fix later
 	m_recieveThread = std::thread(&Client::RecieveMessages, this);
 	//CreateThread(NULL, 0, RecieveMessage, (LPVOID)m_connectSocket, 0, 0);
 
@@ -136,8 +113,7 @@ void Client::RecieveMessages()
 		}
 		else 
 		{
-			printf(recvbuf);
-			printf("\n");
+			std::cout << recvbuf << std::endl;
 		}
 	}
 }
@@ -255,6 +231,6 @@ void Client::PrintCommands()
 	std::cout << "Here are the available commands: " << std::endl;
 	for (std::pair<Command, std::string> info : m_commandInfo) 
 	{
-		std::cout << m_commands[info.first] << ": " << info.second << std::endl;
+		std::cout << m_commands[info.first] << " " << info.second << std::endl;
 	}
 }
